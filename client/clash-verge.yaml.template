@@ -1,0 +1,57 @@
+# ============================================================
+# Clash Verge 合并配置模板
+# 规则：claude/gpt → 自建节点；海外 → 美国节点；其余 → 直连
+# 用法：复制为 clash-verge.yaml，替换 ${...} 变量，填入你的机场美国节点
+# ============================================================
+mode: rule
+ipv6: true
+log-level: info
+
+dns:
+  enable: true
+  ipv6: true
+  nameserver:
+    - 119.29.29.29
+    - 223.5.5.5
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.0/15
+
+proxies:
+  # 自建节点（走 WireGuard 隧道 → 远程 IPv6 出口）
+  - {name: "${SELF_NODE_NAME}", type: socks5, server: ${SERVER_TUN_IP}, port: ${MIXED_PORT}}
+  # ===== 在此填入你的机场美国节点（从你的机场订阅复制，多行）=====
+  # - {name: "🇺🇸 美国节点 1", server: 你的服务器, port: 端口, type: ss, cipher: aes-128-gcm, password: 密码}
+  # - {name: "🇺🇸 美国节点 2", ...}
+
+proxy-groups:
+  - name: "自建"
+    type: select
+    proxies:
+      - "${SELF_NODE_NAME}"
+  - name: "美国节点"
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    proxies:
+      # ===== 把上面填入的美国节点名逐一列出 =====
+      - "🇺🇸 美国节点 1"
+      - "🇺🇸 美国节点 2"
+  - name: "PROXY"
+    type: select
+    proxies:
+      - 自建
+      - 美国节点
+
+rules:
+  # claude / gpt → 自建节点
+  - DOMAIN-SUFFIX,claude.ai,自建
+  - DOMAIN-SUFFIX,anthropic.com,自建
+  - DOMAIN-SUFFIX,claudeusercontent.com,自建
+  - DOMAIN-SUFFIX,chatgpt.com,自建
+  - DOMAIN-SUFFIX,openai.com,自建
+  - DOMAIN-SUFFIX,oaistatic.com,自建
+  - DOMAIN-SUFFIX,oaiusercontent.com,自建
+  # 海外需要 VPN 的 → 美国节点
+  - GEOSITE,geolocation-!cn,美国节点
+  # 其余 → 直连
+  - MATCH,DIRECT

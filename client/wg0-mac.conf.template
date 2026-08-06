@@ -1,0 +1,11 @@
+# Mac 客户端 WireGuard 配置模板（由 genkeys.sh 输出实际值）
+# 隧道内部地址: ${CLIENT_TUN_IP}/24
+[Interface]
+Address = ${CLIENT_TUN_IP}/24
+PrivateKey = ${CLIENT_PRIVATE_KEY}
+
+[Peer]
+PublicKey = ${SERVER_PUBLIC_KEY}
+Endpoint = ${SERVER_ENDPOINT}   # 脚本生成：IPv6 自动带方括号，如 [2001:db8::1]:51820
+AllowedIPs = ${TUNNEL_SUBNET}
+PersistentKeepalive = 25

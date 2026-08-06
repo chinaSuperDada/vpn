@@ -1,0 +1,11 @@
+# Mihomo 代理配置（由 deploy.sh 用变量生成，只监听隧道 IP）
+mixed-port: ${MIXED_PORT}
+allow-lan: true
+bind-address: ${SERVER_TUN_IP}
+mode: rule
+log-level: warning
+ipv6: true
+proxies: []
+proxy-groups: []
+rules:
+  - MATCH,DIRECT

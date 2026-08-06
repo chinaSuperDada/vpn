@@ -1,0 +1,11 @@
+# 密钥与运行时
+*.key
+output/
+config/vars.env
+
+# 生成配置
+*.conf
+*.log
+
+# 系统
+.DS_Store
