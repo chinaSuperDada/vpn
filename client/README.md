@@ -36,3 +36,17 @@
 - claude.ai / chatgpt.com → 自建节点（IPv6 出口）
 - Google/YouTube/GitHub 等海外 → 美国节点（url-test 自动选最快）
 - 国内网站 → 直连
+
+## 5. 添加更多设备（安卓手机等）
+
+每台设备需要**独立的密钥和隧道 IP**，用服务端脚本一键添加：
+
+```bash
+# 在服务器上执行
+sudo bash server/add-peer.sh android 10.8.0.3   # 设备名 + 分配的隧道 IP
+# 会输出该设备的 WireGuard 配置 → 保存/扫码导入设备
+```
+
+设备端两步：
+1. **WireGuard App**（安卓用 Play/酷安/F-Droid 版）导入上面输出的配置
+2. **Clash Meta for Android**（Mihomo 核心）导入同一个 `clash-verge.yaml` 合并配置，自建节点地址就是隧道 IP，无需改动
